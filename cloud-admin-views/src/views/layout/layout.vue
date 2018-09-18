@@ -1,7 +1,11 @@
 <template>
     <div class="layout">
         <div class="header ml-200">
-            <h1 class="title">云书后台操作系统</h1>
+            <h1 class="title">云书后台操作系统
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </h1>
+            
         </div>
         <div class="side-bar">
             <el-menu
@@ -11,34 +15,28 @@
             <el-submenu index="1">
                 <template slot="title">
                 <i class="el-icon-location"></i>
-                <span>导航一</span>
+                <span>用户管理</span>
                 </template>
                 <el-menu-item-group>
-                <template slot="title">用户管理</template>
-                <el-menu-item index="/layout/index">首页</el-menu-item>
-                <el-menu-item index="/login">登录页</el-menu-item>
-                <el-menu-item index="/layout/users">用户管理页面</el-menu-item>
+                    <el-menu-item index="/layout/index">首页</el-menu-item>
+                    <el-menu-item index="/login">登录页</el-menu-item>
+                    <el-menu-item index="/layout/users">用户管理页面</el-menu-item>
+                    <el-menu-item index="/layout/addManager">添加管理员</el-menu-item>
+                    <el-menu-item index="/layout/changeInfo">修改个人信息</el-menu-item>
+                    <el-menu-item index="/layout/changePassword">修改密码</el-menu-item>
                 </el-menu-item-group>
-                <el-menu-item-group title="分组2">
-                <el-menu-item index="1-3">选项3</el-menu-item>
-                </el-menu-item-group>
-                <el-submenu index="1-4">
-                <template slot="title">选项4</template>
-                <el-menu-item index="1-4-1">选项1</el-menu-item>
-                </el-submenu>
             </el-submenu>
-            <el-menu-item index="2">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
-            </el-menu-item>
-            <el-menu-item index="3" disabled>
-                <i class="el-icon-document"></i>
-                <span slot="title">导航三</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-                <i class="el-icon-setting"></i>
-                <span slot="title">导航四</span>
-            </el-menu-item>
+            <el-submenu index="2">
+                <template slot="title">
+                <i class="el-icon-location"></i>
+                <span>图书管理</span>
+                </template>
+                <el-menu-item-group>
+                    <el-menu-item index="/layout/allBook">全部图书</el-menu-item>
+                    <el-menu-item index="/layout/bookClassification">图书分类</el-menu-item>
+                </el-menu-item-group>
+            </el-submenu>
+            
             </el-menu>
         </div>
         <div class="main-content ml-200">
@@ -49,7 +47,12 @@
 
 <script>
 export default {
-  name: "layout"
+  name: "layout",
+  data() {
+      return {
+          imageUrl: this.$store.state.userinfo.avatar
+      }
+  }
 };
 </script>
 
@@ -61,6 +64,16 @@ export default {
     line-height: 60px;
     border-bottom: 1px solid #f1f1f1;
     font-size: 20px;
+    height: 60px;
+    margin-left: 60px;
+  }
+
+  img{
+      width: 50px;
+      height: 50px;
+      float: right;
+      margin-right: 10px;
+      margin-top: 5px;
   }
 
   .ml-200 {
@@ -82,6 +95,13 @@ export default {
   .main-content{
       padding: 15px;
   }
+
+  /deep/{
+    .el-menu{
+      border-right: none;
+    }
+  }
+  
 }
-</style>
+</style>-
 

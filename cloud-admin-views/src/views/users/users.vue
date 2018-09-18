@@ -4,14 +4,14 @@
             <el-breadcrumb>
                 <el-breadcrumb-item :to="{ path: '/layout/index' }">首页</el-breadcrumb-item>
                 <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-                <el-button type="primary" class="addBtn" @click="handleAdd">添加管理员</el-button>
             </el-breadcrumb>
             
+            <h2>用户管理页面</h2>
             <el-table :data="tableData">
-                <el-table-column prop="nickname" label="昵称" width="130">
+                <el-table-column prop="nickname" label="昵称" width="180">
 
                 </el-table-column>
-                <el-table-column prop="createdTime" label="日期" width="200">
+                <el-table-column prop="createdTime" label="日期" width="250">
 
                 </el-table-column>
                 <el-table-column prop="desc" label="个性签名" width="400">
@@ -24,15 +24,21 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="handleDetails(scope.row._id)" size="small" type="primary">
+                        <el-button @click="handleDetails(scope.row)" size="small" type="primary">
                             查看详细
                         </el-button>
-                        <el-button @click="handleDelete(scope.row._id)" size="small" type="primary">
+                        <el-button @click="handleDelete(scope.row._id)" size="small" type="danger">
                             删除
                         </el-button>
                     </template>
                 </el-table-column>
             </el-table>
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                @current-change="pageChange"
+                :total="count">
+            </el-pagination>
         </div>
     </div>
 </template>
@@ -41,20 +47,33 @@
     export default {
         data() {
             return {
-                tableData: []
+                tableData: [],
+                count:0,
+                page:1
             }
         },
         methods: {
             getData() {
-                this.$axios.get('/user').then(res => {
+                this.$axios.get('/user', {pn: this.page, size: 10}).then(res => {
                     if(res.code == 200) {
+                        this.count = res.count
                         this.tableData = res.data
+                        console.log(res)
                     }
                 })
             },
-            handleDetails(id) {
-                console.log(this.tableData)
+            handleDetails(row) {
+                let detailsItem = row
+                console.log(detailsItem)
+                this.$store.commit('DETAIL_USERINFO', detailsItem)
                 this.$router.push('/layout/userDetails')
+                // this.tableData.forEach((item, index) => {
+                //     this.tableData[index] = item
+                //     if(item._id == id){
+                //     }
+                // })
+                // console.log(item)
+                //this.$router.push('/layout/userDetails')
             },
             handleDelete(id) {
                 this.$confirm('此操作将删除一位管理员, 是否继续?', '警告', {
@@ -64,6 +83,7 @@
                     }).then(() => {
                         this.$axios.post('/user/delete', {userIds: [id]}).then(res => {
                             this.$message.success(res.msg)
+                            this.getData()
                         })
                     }).catch(() => {
                     this.$message({
@@ -72,8 +92,9 @@
                     });          
                 });
             },
-            handleAdd() {
-                this.$router.push('/layout/addManager')
+            pageChange(page) {
+                this.page = page
+                this.getData()
             }
         },
         created() {
@@ -84,6 +105,12 @@
 
 <style scoped lang="scss">
     .user-manage{
+        h2{
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
         .addBtn{
             position: fixed;
             top: 10px;
@@ -95,5 +122,11 @@
             width: 60px;
             height: 60px;
         }
+
+        .el-pagination{
+            margin-top: 30px;
+            text-align: center;        
+        }
     }
+    
 </style>

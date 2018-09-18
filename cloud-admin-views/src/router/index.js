@@ -9,7 +9,12 @@ const components = {
   index: () => import('@/views/index/index'),
   users: () => import('@/views/users/users'),
   addManager: () => import('@/views/addManager/addManager'),
-  userDetails: () => import('@/views/userDetails/userDetails')
+  userDetails: () => import('@/views/userDetails/userDetails'),
+  changeInfo: () => import('@/views/changeInfo/changeInfo'),
+  changePassword: () => import('@/views/changePassword/changePassword'),
+  allBook: () => import('@/views/allBook/allBook'),
+  bookClassification: () => import('@/views/bookClassification/bookClassification'),
+  bookEdit: () => import('@/views/bookEdit/bookEdit')
 }
 
 export default new Router({
@@ -48,6 +53,26 @@ export default new Router({
         {
           path: 'userDetails',
           component: components.userDetails
+        },
+        {
+          path: 'changeInfo',
+          component: components.changeInfo
+        },
+        {
+          path: 'changePassword',
+          component: components.changePassword
+        },
+        {
+          path: 'allBook',
+          component: components.allBook
+        },
+        {
+          path: 'bookClassification',
+          component: components.bookClassification
+        },
+        {
+          path: 'bookEdit',
+          component: components.bookEdit
         }
       ]
     }

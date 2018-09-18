@@ -3,15 +3,15 @@
         <h1 class="title">欢迎来到Cloud-Book后台管理系统</h1>
         <div class="login-box">
             <h2 class="login-box-title">请登录</h2>
-            <el-form class="form">
-                <el-form-item label="用户名">
+            <el-form class="form" ref="form" :rules="rule" :model="formData">
+                <el-form-item label="用户名" prop="username">
                     <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
-                    <el-input v-model="formData.password" type="password" placeholder="请输入密码"></el-input>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="formData.password" type="password" placeholder="请输入密码" @keyup.enter.native="validateLogin"></el-input>
                 </el-form-item>
             </el-form>
-            <el-button @click="handleLogin" type="primary" class="login-btn " :loading="isLoading">
+            <el-button @click="validateLogin" type="primary" class="login-btn " :loading="isLoading">
                 登录
             </el-button>
         </div>
@@ -22,12 +22,36 @@
     export default {
         name:"login",
         data() {
+            const validateUsername = (rule, value, callback) => {
+                if(!value) {
+                    callback(new Error('请输入合法的用户名!'))
+                }else {
+                    callback()
+                }
+            }
+            const validatePassword = (rule, value, callback) => {
+                if(!value) {
+                    callback(new Error('密码不能为空!'))
+                }else if(value.length < 5) {
+                    callback(new Error('密码长度不能小于5位!'))
+                }else {
+                    callback()
+                }
+            }
             return {
                 formData: {
                     username: '',
                     password: ''
                 },
-                isLoading: false
+                isLoading: false,
+                rule: {
+                    username: [
+                        {validator: validateUsername, trigger: 'blur'}
+                    ],
+                    password: [
+                        {validator: validatePassword, trigger: 'blur'}
+                    ]
+                }
             }
         },
         methods: {
@@ -36,6 +60,7 @@
                 this.$axios.post('/login', this.formData).then(res => {
                     console.log(res)
                     if(res.code == 200){
+                        this.$store.commit('CHANGE_USERINFO', res.data)
                         this.$message.success('登录成功')
                         setTimeout(() => {
                             this.$router.push('/layout/index')
@@ -47,6 +72,15 @@
                 }).catch(err => {
                     this.isLoading = false
                 })
+            },
+            validateLogin() {
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        this.handleLogin()
+                    } else {
+                        return false;
+                    }
+                });
             }
         }
     }

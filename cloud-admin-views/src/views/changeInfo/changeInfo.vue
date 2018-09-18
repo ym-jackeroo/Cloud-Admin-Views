@@ -1,15 +1,9 @@
 <template>
     <div>
-        <h2>添加管理员</h2>
-        <el-form label-width="300px">
+        <h2>修改个人信息</h2>
+        <el-form :model="formData" label-width="300px">
             <el-form-item label="用户名">
-                <el-input v-model="formData.username" class="w500"></el-input>
-            </el-form-item>
-            <el-form-item label="密码">
-                <el-input v-model="formData.password" class="w500"></el-input>
-            </el-form-item>
-            <el-form-item label="再次输入">
-                <el-input v-model="rewrite" class="w500"></el-input>
+                <el-input v-model="formData.username"  class="w500" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="昵称">
                 <el-input v-model="formData.nickname" class="w500"></el-input>
@@ -17,27 +11,28 @@
             <el-form-item label="邮箱">
                 <el-input v-model="formData.email" class="w500"></el-input>
             </el-form-item>
-            <el-form-item label="头像" class="w500">
+            <el-form-item label="头像">
                 <el-upload class="avatar-uploader"
                     :data="uploadData"
                     action="http://upload-z1.qiniup.com"
                     :on-success="handleAvatarSuccess"
+                    :on-preview="handlePreview"
                     :before-upload="beforeAvatarUpload"
                     :show-file-list="false"
                 >
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <img v-if="imageUrl" :src="imageUrl"  class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>   
+                </el-upload>
             </el-form-item>
             <el-form-item label="个性签名">
-                <el-input v-model="formData.desc" class="w500" type="textarea"></el-input>
+                <el-input type="textarea" v-model="formData.desc" class="w500"></el-input>
             </el-form-item>
-            
             <el-form-item>
-                <el-button type="primary" @click="submitForm()" class="submit">提交</el-button>
+                <el-button type="primary" class="submit" @click="handleSubmit">
+                    保存更改
+                </el-button> 
             </el-form-item>
         </el-form>
-        
     </div>
 </template>
 
@@ -45,44 +40,35 @@
     import axios from 'axios'
 
     export default {
-        name: "addManager",
         data() {
             return {
                 uploadData: {
-                    token:''
+                    token: ''
                 },
                 imageUrl: '',
-                rewrite: '',
                 formData: {
-                    username:'',
-                    password:'',
-                    desc:'',
-                    nickname:'',
-                    email:'',
-                    avatar: ''
+                    username: '',
+                    nickname: '',
+                    email: '',
+                    avatar: '',
+                    desc: ''
                 }
-            };
+            }
         },
         methods: {
-            submitForm() {
-                this.$axios.post('/user', this.formData).then(res => {
-                    if(res.code == 200){
-                        if(this.formData.password == this.rewrite){
-                            this.$message.success('添加成功')
-                                setTimeout(() => {
-                                    this.$router.push('/layout/users')
-                            },1000)
-                            console.log(res)
-                        }else{
-                            this.$message.warning('两次输入的密码不一致')
-                        }
-                    }
-                })
+            initData() {
+                this.formData = {
+                    ...this.$store.state.userinfo
+                },
+                this.imageUrl = this.formData.avatar
             },
             getToken() {
                 axios.get('http://upload.yaojunrong.com/getToken').then(res => {
                     this.uploadData.token = res.data.data
                 })
+            },
+            handlePreview(file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
             },
             handleAvatarSuccess(res, file) {
                 this.imageUrl = URL.createObjectURL(file.raw);
@@ -99,24 +85,35 @@
                 this.$message.error('上传头像图片大小不能超过 2MB!');
                 }
                 return isJPG && isLt2M;
+            },
+            handleSubmit() {
+                this.$axios.put('/user/userInfo', this.formData).then(res => {
+                    console.log(res)
+                    if(res.code == 200) {
+                        this.$store.commit('CHANGE_USERINFO', res.data)
+                        this.initData()
+                        this.$message.success(res.msg)
+                    }
+                })
             }
         },
         created() {
+            this.initData()
             this.getToken()
         }
     }
 </script>
 
 <style scoped>
-  h2 {
+h2{
     text-align: center;
-  }
+}
 
-  .el-form {
+.el-form{
     margin-top: 30px;
-  }
+}
 
-  .avatar-uploader {
+.avatar-uploader {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
@@ -124,7 +121,7 @@
     overflow: hidden;
     width: 178px;
     height: 178px;
-  }
+}
   .avatar-uploader:hover {
     border-color: #409EFF;
   }
