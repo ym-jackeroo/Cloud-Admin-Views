@@ -18,16 +18,7 @@
                 <el-input v-model="formData.email" class="w500"></el-input>
             </el-form-item>
             <el-form-item label="头像" class="w500">
-                <el-upload class="avatar-uploader"
-                    :data="uploadData"
-                    action="http://upload-z1.qiniup.com"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload"
-                    :show-file-list="false"
-                >
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>   
+                <imgUpload v-model="formData.avatar"></imgUpload>   
             </el-form-item>
             <el-form-item label="个性签名">
                 <el-input v-model="formData.desc" class="w500" type="textarea"></el-input>
@@ -42,16 +33,15 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import imgUpload from '@/components/img-upload'
 
     export default {
+        components: {
+            imgUpload
+        },
         name: "addManager",
         data() {
             return {
-                uploadData: {
-                    token:''
-                },
-                imageUrl: '',
                 rewrite: '',
                 formData: {
                     username:'',
@@ -69,40 +59,19 @@
                     if(res.code == 200){
                         if(this.formData.password == this.rewrite){
                             this.$message.success('添加成功')
-                                setTimeout(() => {
-                                    this.$router.push('/layout/users')
+                            setTimeout(() => {
+                                this.$router.push('/layout/users')
                             },1000)
                             console.log(res)
                         }else{
                             this.$message.warning('两次输入的密码不一致')
                         }
+                    }else if(res.code == 401){
+                        this.$message.error(res.msg)
+                        this.$router.push('/login')
                     }
                 })
-            },
-            getToken() {
-                axios.get('http://upload.yaojunrong.com/getToken').then(res => {
-                    this.uploadData.token = res.data.data
-                })
-            },
-            handleAvatarSuccess(res, file) {
-                this.imageUrl = URL.createObjectURL(file.raw);
-                this.formData.avatar = URL.createObjectURL(file.raw);
-            },
-            beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
-                }
-                if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return isJPG && isLt2M;
             }
-        },
-        created() {
-            this.getToken()
         }
     }
 </script>

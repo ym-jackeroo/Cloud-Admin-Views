@@ -14,7 +14,12 @@ const components = {
   changePassword: () => import('@/views/changePassword/changePassword'),
   allBook: () => import('@/views/allBook/allBook'),
   bookClassification: () => import('@/views/bookClassification/bookClassification'),
-  bookEdit: () => import('@/views/bookEdit/bookEdit')
+  bookEdit: () => import('@/views/bookEdit/bookEdit'),
+  changeClassification: () => import('@/views/changeClassification/changeClassification'),
+  categoryBook: () => import('@/views/categoryBook/categoryBook'),
+  addCategory: () => import('@/views/addCategory/addCategory'),
+  allSlideshow: () => import('@/views/allSlideshow/allSlideshow'),
+  addBook: () => import('@/views/addBook/addBook')
 }
 
 export default new Router({
@@ -73,6 +78,30 @@ export default new Router({
         {
           path: 'bookEdit',
           component: components.bookEdit
+        },
+        {
+          path: 'changeClassification',
+          component: components.changeClassification
+        },
+        {
+          path: 'categoryBook',
+          component: components.categoryBook
+        },
+        {
+          path: 'addCategory',
+          component: components.addCategory
+        },
+        {
+          path: 'allSlideshow',
+          component: components.allSlideshow
+        },
+        {
+          path: 'addBook',
+          component: components.addBook
+        },
+        {
+          path: 'addSwiper',
+          component:() => import('@/views/addSwiper/addSwiper')
         }
       ]
     }

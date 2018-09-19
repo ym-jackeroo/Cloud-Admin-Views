@@ -2,13 +2,7 @@
     <div>
        <el-form :model="bookItems" label-width="300px">
            <el-form-item label="封面">
-                <el-upload class="avatar-uploader"
-                    action="http://upload-z1.qiniup.com"
-                    :show-file-list="false"
-                >
-                    <img v-if="imageUrl" :src="imageUrl"  class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+                <imgUpload v-model="bookItems.img"></imgUpload>
             </el-form-item>
             <el-form-item label="图书id">
                 <el-input v-model="bookItems.book_id"  class="w500" :disabled="true"></el-input>
@@ -45,11 +39,15 @@
 </template>
 
 <script>
+    import imgUpload from '@/components/img-upload'
+
     export default {
         name: 'bookEdit',
+        components: {
+            imgUpload
+        },
         data() {
             return {
-                imageUrl: '',
                 bookItem: {
                     
                 },
@@ -95,7 +93,7 @@
                 setTimeout(() => {
                     this.$router.push('/layout/allBook')
                 },1000)
-            }
+            },
         },
         created() {
             this.initData()
@@ -110,5 +108,34 @@
 .submit{
     margin-left: 200px;
 }
+.el-form{
+    margin-top: 30px;
+}
+
+.avatar-uploader {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 178px;
+    height: 178px;
+}
+  .avatar-uploader:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
 

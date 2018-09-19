@@ -67,13 +67,6 @@
                 console.log(detailsItem)
                 this.$store.commit('DETAIL_USERINFO', detailsItem)
                 this.$router.push('/layout/userDetails')
-                // this.tableData.forEach((item, index) => {
-                //     this.tableData[index] = item
-                //     if(item._id == id){
-                //     }
-                // })
-                // console.log(item)
-                //this.$router.push('/layout/userDetails')
             },
             handleDelete(id) {
                 this.$confirm('此操作将删除一位管理员, 是否继续?', '警告', {

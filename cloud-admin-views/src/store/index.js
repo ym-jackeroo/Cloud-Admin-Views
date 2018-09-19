@@ -20,9 +20,8 @@ const store = new Vuex.Store({
             avatar: '',
             email: ''
         },
-        bookItem: {
-            
-        }
+        bookItem: {},
+        classification: {},
     },
     mutations: {
         CHANGE_USERINFO (state, userinfo) {
@@ -33,6 +32,9 @@ const store = new Vuex.Store({
         },
         BOOK_EDIT (state, bookItem) {
             state.bookItem = bookItem
+        },
+        CLASSIFICATION_EDIT (state, classification) {
+            state.classification = classification
         }
     },
     actions: {},

@@ -1,8 +1,7 @@
 <template>
     <div>
-        <h2>全部图书</h2>
-        <el-table :data="allBook">
-            <el-table-column prop="img" label="封面" width="220">
+       <el-table :data="categoryBooks">
+            <el-table-column prop="img" label="封面" width="200">
                 <template slot-scope="scope">
                     <img :src="scope.row.img" alt="">
                 </template>
@@ -16,7 +15,7 @@
             <el-table-column prop="createTime" label="日期" width="100">
 
             </el-table-column>
-            <el-table-column prop="desc" label="图书简介" width="300"> 
+            <el-table-column prop="desc" label="图书简介" width="400">
 
             </el-table-column>
             
@@ -25,49 +24,39 @@
                     <el-button @click="handleEdit(scope.row)" size="small" type="primary">
                         编辑
                     </el-button>
-                    <el-button @click="handleAddSwiper(scope.row)" size="small" type="primary">
-                        添加轮播图
-                    </el-button>
                     <el-button @click="handleDelete(scope.row._id)" size="small" type="danger">
                         删除
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
-    </div>
+    </div> 
 </template>
 
 <script>
     export default {
-        name: 'allBook',
+        name: "categoryBook",
         data() {
             return {
-                allBook:[],
-                page:1
-            };
+                books_id: '',
+                categoryBooks: [] 
+            }
         },
         methods: {
-            getAllBook(){
-                this.$axios.get('/book',{pn:this.page, size:100}).then(res => {
-                    console.log(res)
-                    this.allBook = res.data
+            initData() {
+                this.books_id = this.$route.query.books_id
+                console.log(this.books_id)
+            },
+            getCatecoryBooks() {
+                this.$axios.get(`/category/${this.books_id}/books`).then(res => {
+                    this.categoryBooks = res.data.books
+                    console.log(this.categoryBooks)
                 })
-            },
-            handleEdit(row){
-                console.log(row)
-                this.$store.commit('BOOK_EDIT', row)
-                this.$router.push('/layout/bookEdit')
-            },
-            handleAddSwiper(row){
-                this.$router.push({path:'/layout/addSwiper',query:{book:row._id}})
-            },
-            pageChange(page) {
-                this.page = page
-                this.getAllBook()
             }
         },
         created() {
-            this.getAllBook()
+            this.initData()
+            this.getCatecoryBooks()
         }
     }
 </script>
@@ -77,9 +66,4 @@
         height: 250px;
         width: 200px;
     }
-    h2{
-        text-align: center;
-        margin-bottom: 20px;
-    }
-  
 </style>

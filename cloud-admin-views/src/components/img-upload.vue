@@ -1,85 +1,76 @@
 <template>
-    <el-upload class="avatar-uploader"
-        :data="uploadData"
-        action="https://upload-z1.qiniup.com"
-        :show-file-list="false"
-        :on-success="uploadSuccess"
-        >
-        <img v-if="currentValue" :src="currentValue" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-    </el-upload>                   
+  <el-upload
+    class="my-upload"
+    :data="uploadData"
+    action="https://upload-z1.qiniup.com"
+    :show-file-list="false"
+    :on-success="uploadSuccess">
+    <img :src="currentValue" class="upload-icon" v-show="currentValue">
+    <i class="el-icon-plus my-upload-icon" v-show="!currentValue"></i>
+  </el-upload>
 </template>
 
 <script>
-    import axios from 'axios'
+  import axios from 'axios'
 
-    export default {
-        props: {
-            value: {
-                type: String
-            }
+  export default {
+    props: {
+      value: {
+        type: String
+      }
+    },
+    data () {
+      return {
+        uploadData: {
+          token: ''
         },
-        data() {
-            return {
-                uploadData: {
-                    token: ''
-                },
-                currentValue: this.value
-            }
-        },
-        methods: {
-            uploadSuccess (file) {
-                this.$emit('input', file.url)
-            },
-            getToken () { // 获取上传凭证
-                axios.get('http://upload.yaojunrong.com/getToken').then(res => {
-                console.log(res.data.data)
-                this.uploadData.token = res.data.data
-                })
-            },
-        watch: {
-            value (val) {
-                this.currentValue = val
-            }
-        },
-        created() {
-            this.getToken()
-        }
+        currentValue: this.value
+      }
+    },
+    methods: {
+      uploadSuccess (file) {
+        this.$emit('input', file.url)
+      },
+      getToken () { // 获取上传凭证
+        axios.get('http://upload.yaojunrong.com/getToken').then(res => {
+          this.uploadData.token = res.data.data
+        })
+      }
+    },
+    watch: {
+      value (val) {
+        this.currentValue = val
+      }
+    },
+    created() {
+      this.getToken()
     }
-}
+  }
 </script>
 
-<style scoped>
-    .avatar-uploader {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
+<style>
+  .my-upload {
     position: relative;
-    overflow: hidden;
-    width: 178px;
-    height: 178px;
-  }
-  .avatar-uploader:hover {
-    border-color: #409EFF;
-  }
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
+    float: left;
     display: block;
-  }
-  .w500 {
-      width: 500px;
-  }
-  .submit{
+    border: 1px solid #f1f1f1;
     width: 100px;
-    margin-left: 200px;      
+    height: 100px;
+    border-radius: 6px;
+  }
+  .my-upload .upload-icon {
+    display: block;
+    width: 100%;
+  }
+
+  
+
+  .my-upload-icon {
+    position: absolute; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #aaa;
+    font-size: 24px;
   }
 </style>

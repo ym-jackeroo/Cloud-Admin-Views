@@ -12,17 +12,7 @@
                 <el-input v-model="formData.email" class="w500"></el-input>
             </el-form-item>
             <el-form-item label="头像">
-                <el-upload class="avatar-uploader"
-                    :data="uploadData"
-                    action="http://upload-z1.qiniup.com"
-                    :on-success="handleAvatarSuccess"
-                    :on-preview="handlePreview"
-                    :before-upload="beforeAvatarUpload"
-                    :show-file-list="false"
-                >
-                    <img v-if="imageUrl" :src="imageUrl"  class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
+                <imgUpload v-model="formData.avatar"></imgUpload>
             </el-form-item>
             <el-form-item label="个性签名">
                 <el-input type="textarea" v-model="formData.desc" class="w500"></el-input>
@@ -38,14 +28,14 @@
 
 <script>
     import axios from 'axios'
+    import imgUpload from '@/components/img-upload'
 
     export default {
+        components: {
+            imgUpload
+        },
         data() {
             return {
-                uploadData: {
-                    token: ''
-                },
-                imageUrl: '',
                 formData: {
                     username: '',
                     nickname: '',
@@ -59,32 +49,7 @@
             initData() {
                 this.formData = {
                     ...this.$store.state.userinfo
-                },
-                this.imageUrl = this.formData.avatar
-            },
-            getToken() {
-                axios.get('http://upload.yaojunrong.com/getToken').then(res => {
-                    this.uploadData.token = res.data.data
-                })
-            },
-            handlePreview(file) {
-                this.imageUrl = URL.createObjectURL(file.raw);
-            },
-            handleAvatarSuccess(res, file) {
-                this.imageUrl = URL.createObjectURL(file.raw);
-                this.formData.avatar = URL.createObjectURL(file.raw);
-            },
-            beforeAvatarUpload(file) {
-                const isJPG = file.type === 'image/jpeg';
-                const isLt2M = file.size / 1024 / 1024 < 2;
-
-                if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
                 }
-                if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!');
-                }
-                return isJPG && isLt2M;
             },
             handleSubmit() {
                 this.$axios.put('/user/userInfo', this.formData).then(res => {
@@ -93,13 +58,15 @@
                         this.$store.commit('CHANGE_USERINFO', res.data)
                         this.initData()
                         this.$message.success(res.msg)
+                        setTimeout(() => {
+                            this.$router.push('/layout/users')
+                        }, 1000)
                     }
                 })
             }
         },
         created() {
             this.initData()
-            this.getToken()
         }
     }
 </script>

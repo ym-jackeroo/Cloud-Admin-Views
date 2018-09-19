@@ -7,10 +7,12 @@ import App from './App'
 import store from './store'
 import router from './router'
 import {$axios} from './utils'
+import imgUpload from '@/components/img-upload'
 
 Vue.prototype.$axios = $axios
 
 Vue.use(ElementUI);
+Vue.use(imgUpload);
 
 Vue.config.productionTip = false
 
