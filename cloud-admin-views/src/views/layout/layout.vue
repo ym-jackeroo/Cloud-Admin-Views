@@ -37,6 +37,7 @@
                         <el-menu-item index="/layout/addCategory">添加分类</el-menu-item>
                         <el-menu-item index="/layout/addBook">添加图书</el-menu-item>
                         <el-menu-item index="/layout/allSlideshow">轮播图列表</el-menu-item>
+                        <el-menu-item index="/layout/addSlideshow">添加轮播图</el-menu-item>
                     </el-menu-item-group>
                 </el-submenu>
             </el-menu>

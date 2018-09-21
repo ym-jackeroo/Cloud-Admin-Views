@@ -60,7 +60,8 @@
   }
   .my-upload .upload-icon {
     display: block;
-    width: 100%;
+    width: 100px;
+    height: 100px;
   }
 
   

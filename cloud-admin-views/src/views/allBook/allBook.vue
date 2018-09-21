@@ -61,6 +61,29 @@
             handleAddSwiper(row){
                 this.$router.push({path:'/layout/addSwiper',query:{book:row._id}})
             },
+            handleDelete(id) {
+                this.$confirm('此操作将永久删除该图书, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.delete(`/book/${id}`).then(res => {
+                        console.log(res)
+                        if(res.code == 200) {
+                            this.$message({
+                            type: 'success',
+                            message: res.msg
+                            });
+                        }
+                        this.getAllBook()
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
+            },
             pageChange(page) {
                 this.page = page
                 this.getAllBook()

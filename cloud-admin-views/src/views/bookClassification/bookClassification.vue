@@ -22,7 +22,7 @@
                     <el-button @click="handleEdit(scope.row)" size="small" type="primary">
                         编辑
                     </el-button>
-                    <el-button @click="handleCheck(scope.row)" size="small" type="primary">
+                    <el-button @click="handleCheck(scope.row._id)" size="small" type="primary">
                         查看该分类
                     </el-button>
                     <el-button @click="handleDelete(scope.row._id)" size="small" type="danger">
@@ -58,9 +58,31 @@
                 this.$store.commit('CLASSIFICATION_EDIT', row)
                 this.$router.push('/layout/changeClassification')
             },
-            handleCheck(row) {
-                console.log(row)
-                    this.$router.push({path:'/layout/categoryBook', query:{books_id: row._id}})
+            handleCheck(id) {
+                this.$router.push({path:'/layout/categoryBook', query:{category_id: id}})
+            },
+            handleDelete(id) {
+                this.$confirm('请确保该分类下没有图书, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.delete(`/category/${id}`).then(res => {
+                    console.log(res)
+                    if(res.code == 200) {
+                        this.$message({
+                        type: 'success',
+                        message: res.msg
+                        });
+                    }
+                    this.getCategory()
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });  
+                })                
             }
         },
         created() {

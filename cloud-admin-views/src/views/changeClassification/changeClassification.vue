@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2>编辑分类</h2>
         <el-form :model="classification" label-width="300px">
             <el-form-item label="封面">
                 <imgUpload v-model="classification.icon"></imgUpload>
@@ -66,6 +67,11 @@
 </script>
 
 <style scoped>
+    h2{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
     .w500{
         width: 500px;
     }

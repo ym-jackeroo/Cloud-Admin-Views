@@ -61,7 +61,12 @@
             },
             postBook() {
                 this.$axios.post('/book', this.formData).then(res => {
-                    console.log(res)
+                    if(res.code == 200) {
+                        this.$message.success(res.msg)
+                        setTimeout(() => {
+                            this.$router.push('/layout/allBook')
+                        },1000)
+                    }
                 })
             }
         },

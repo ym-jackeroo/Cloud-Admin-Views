@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2>{{this.classname}}</h2>
        <el-table :data="categoryBooks">
             <el-table-column prop="img" label="封面" width="200">
                 <template slot-scope="scope">
@@ -38,20 +39,49 @@
         name: "categoryBook",
         data() {
             return {
-                books_id: '',
-                categoryBooks: [] 
+                category_id: '',
+                categoryBooks: [],
+                classname: '',
+                page: 1,
+                count: 0
             }
         },
         methods: {
             initData() {
-                this.books_id = this.$route.query.books_id
-                console.log(this.books_id)
+                this.category_id = this.$route.query.category_id
             },
             getCatecoryBooks() {
-                this.$axios.get(`/category/${this.books_id}/books`).then(res => {
+                this.$axios.get(`/category/${this.category_id}/books`,{pn:this.page, size:100}).then(res => {
+                    this.classname = res.data.title
                     this.categoryBooks = res.data.books
-                    console.log(this.categoryBooks)
                 })
+            },
+            handleEdit(row) {
+                this.$store.commit('BOOK_EDIT', row)
+                this.$router.push('/layout/bookEdit')
+            },
+            handleDelete(id) {
+                this.$confirm('此操作将永久删除该分类下的书籍, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.delete(`/category/${this.category_id}/book/${id}`).then(res => {
+                    console.log(res)
+                    if(res.code == 200) {
+                        this.$message({
+                        type: 'success',
+                        message: res.msg
+                        });
+                    }
+                    this.getCatecoryBooks()
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });  
+                }) 
             }
         },
         created() {
@@ -62,6 +92,11 @@
 </script>
 
 <style scoped>
+    h2{
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
     img{
         height: 250px;
         width: 200px;

@@ -12,7 +12,7 @@ import imgUpload from '@/components/img-upload'
 Vue.prototype.$axios = $axios
 
 Vue.use(ElementUI);
-Vue.use(imgUpload);
+Vue.component('upload-img', imgUpload);
 
 Vue.config.productionTip = false
 

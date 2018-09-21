@@ -102,6 +102,16 @@ export default new Router({
         {
           path: 'addSwiper',
           component:() => import('@/views/addSwiper/addSwiper')
+        },
+        {
+          path: 'addSlideshow',
+          name: 'addSlideshow',
+          component:() => import('@/views/addSlideshow/addSlideshow')
+        },
+        {
+          path: 'editSlideshow',
+          name: 'editSlideshow',
+          component:() => import('@/views/addSlideshow/addSlideshow')
         }
       ]
     }

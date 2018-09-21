@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h2>编辑图书</h2>
        <el-form :model="bookItems" label-width="300px">
            <el-form-item label="封面">
                 <imgUpload v-model="bookItems.img"></imgUpload>
@@ -102,6 +103,10 @@
 </script>
 
 <style scoped>
+h2{
+    text-align: center;
+    margin-bottom: 20px;
+}
 .w500{
     width: 500px;
 }

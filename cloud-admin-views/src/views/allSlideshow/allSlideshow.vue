@@ -23,10 +23,10 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="handleEdit" size="small" type="primary">
+                    <el-button @click="handleEdit(scope.row._id)" size="small" type="primary">
                        编辑 
                     </el-button>
-                    <el-button @click="handleDelete" size="small" type="danger">
+                    <el-button @click="handleDelete(scope.row._id)" size="small" type="danger">
                         删除
                     </el-button>
                 </template>
@@ -52,11 +52,31 @@
                     this.swiperList = res.data
                 })
             },
-            handleEdit() {
-
+            handleEdit(id) {
+                this.$router.push({name:"editSlideshow", query: {id}})
             },
-            handleDelete() {
-
+            handleDelete(ids) {
+                this.$confirm('此操作将永久删除该轮播图, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$axios.post('/swiper/delete', {ids:[ids]}).then(res => {
+                        console.log(res)
+                        if(res.code == 200) {
+                            this.$message({
+                            type: 'success',
+                            message: res.msg
+                            });
+                        }
+                        this.getSwiper()
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });          
+                });
             }
         },
         created() {
